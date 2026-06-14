@@ -44,6 +44,59 @@ Run the `ROCm` container:
 docker compose -f docker-compose.rocm.yml up
 ```
 
+Run the `CPU` container in `hardened` mode:
+
+```
+docker compose -f docker-compose.cpu.yml -f docker-compose.cpu.hardened.yml up
+```
+
+Run the `CUDA` container in `hardened` mode:
+
+```
+docker compose -f docker-compose.cuda.yml -f docker-compose.cuda.hardened.yml up
+```
+
+Run the `TensorRT` container in `hardened` mode:
+
+```
+docker compose -f docker-compose.tensorrt.yml -f docker-compose.tensorrt.hardened.yml up
+```
+
+Run the `ROCm` container in `hardened` mode:
+
+```
+docker compose -f docker-compose.rocm.yml -f docker-compose.rocm.hardened.yml up
+```
+
+`hardened` mode changes:
+
+- Binds UI ports to `127.0.0.1` only.
+- Drops all Linux capabilities and blocks privilege escalation.
+- Uses a read-only root filesystem and a tmpfs for `/tmp`.
+- Uses an internal Docker network (no outbound internet access).
+
+If this is your first run, start once without the hardened overlay to allow model downloads into `.assets`, then switch back to the hardened overlay.
+
+Use the bootstrap and offline lock script for this workflow:
+
+```
+powershell -ExecutionPolicy Bypass -File .\bootstrap-offline-lock.ps1 -Runtime cpu
+```
+
+Choose a runtime with `-Runtime cpu|cuda|tensorrt|rocm`.
+
+Optional flags:
+
+- `-Build` builds images before bootstrap and startup.
+- `-SkipBootstrap` skips the online download step and starts hardened mode directly.
+- `-Foreground` runs `docker compose up` in foreground mode.
+
+What the script does:
+
+1. Stops existing containers for the selected runtime.
+2. Runs an explicit online `force-download` step to populate `.assets`.
+3. Starts the hardened profile with outbound networking disabled.
+
 
 Usage
 -----

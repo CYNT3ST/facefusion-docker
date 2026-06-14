@@ -1,0 +1,18 @@
+services:
+ facefusion-rocm:
+  ports:
+  - 127.0.0.1:7880:7860
+  cap_drop:
+  - ALL
+  security_opt:
+  - no-new-privileges:true
+  read_only: true
+  tmpfs:
+  - /tmp:size=1g,mode=1777
+  pids_limit: 512
+  networks:
+  - internal_net
+
+networks:
+ internal_net:
+  internal: true
